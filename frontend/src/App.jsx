@@ -11,7 +11,7 @@ import './styles/global.css';
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideNavFooter = ['/login', '/register'].includes(location.pathname);
+  const hideNavFooter = ['/login', '/register', '/dashboard'].includes(location.pathname);
 
   return (
     <div className="app">

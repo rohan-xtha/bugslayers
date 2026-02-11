@@ -1,22 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+const app=require("./app")
+const express=require("express")
+const dotenv=require("dotenv")
+dotenv.config({quiet:true})
+const mongoose=require("mongoose")
+port=process.env.PORT
+mongoose.connect(process.env.MONGODB_URI).then(()=>{
+    console.log('database connected');
+    app.listen(port,()=>{
+        console.log(`app is running on port ${port}`);
+    })
+}).catch((err)=>{
+    console.log(err);
+    
+})
 
-dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
 
-// Basic Route
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the Hackathon API' });
-});
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});

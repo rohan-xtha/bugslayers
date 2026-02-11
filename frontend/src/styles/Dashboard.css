@@ -1,0 +1,439 @@
+:root {
+  --bg-dark: #0f172a;
+  --bg-card: #1e293b;
+  --accent-blue: #3b82f6;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  padding-bottom: 90px; /* Space for bottom nav */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Header */
+.dashboard-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-dark);
+  z-index: 100;
+}
+
+.profile-pic img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-blue);
+}
+
+.search-bar-container {
+  flex: 1;
+  background: var(--bg-card);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-icon {
+  color: var(--text-secondary);
+}
+
+.search-bar-container input {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-bar-container input:focus {
+  outline: none;
+}
+
+.notification-btn {
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-primary);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+}
+
+/* Category Tabs */
+.category-tabs {
+  padding: 0 20px 20px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.tab {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+
+/* Map Section */
+.map-section {
+  padding: 0 20px 20px;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 300px;
+  background: #2a3544;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.map-marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+}
+
+.marker-label {
+  background: white;
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.recenter-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Active Session Card */
+.active-session-card {
+  margin: 0 20px 25px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 24px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  animation: slideUp 0.5s ease-out;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.session-header h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.session-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.detail-item.bill {
+  font-weight: bold;
+  opacity: 1;
+  font-size: 16px;
+}
+
+.checkout-btn {
+  background: white;
+  color: var(--accent-blue);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+
+.checkout-btn:active {
+  transform: scale(0.95);
+}
+
+/* Discovery Section */
+.discovery-section {
+  padding: 0 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.view-all {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.horizontal-scroll {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.parking-lot-card {
+  min-width: 260px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.lot-image {
+  height: 120px;
+  position: relative;
+}
+
+.lot-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status-badge.available {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  backdrop-filter: blur(4px);
+}
+
+.status-badge.full {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+  backdrop-filter: blur(4px);
+}
+
+.lot-content {
+  padding: 15px;
+}
+
+.lot-content h4 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+}
+
+.lot-meta {
+  display: flex;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.lot-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.occupancy-container {
+  margin-bottom: 15px;
+}
+
+.occupancy-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.occupancy-fill {
+  height: 100%;
+  background: var(--accent-blue);
+  border-radius: 3px;
+}
+
+.occupancy-text {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.book-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.book-btn.available {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.book-btn.full {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.nav-item.active {
+  color: var(--accent-blue);
+}
+
+.nav-item span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Scaling */
+@media (max-width: 380px) {
+  .parking-lot-card {
+    min-width: 220px;
+  }
+  .search-bar-container input {
+    font-size: 12px;
+  }
+}
