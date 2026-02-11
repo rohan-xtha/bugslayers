@@ -223,10 +223,13 @@ const Dashboard = () => {
               
               <button 
                 className="recenter-btn-floating" 
-                onClick={() => userLocation && setMapCenter([...userLocation])}
-                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (userLocation) setMapCenter([...userLocation]);
+                }}
+                title="Go to my location"
               >
-                <Navigation size={20} />
+                <Navigation size={22} />
               </button>
             </MapContainer>
           </div>
