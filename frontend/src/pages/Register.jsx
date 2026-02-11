@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { User, Mail, Lock, MapPin } from 'lucide-react';
+import '../styles/Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -11,10 +13,10 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [id]: value
+      [name]: value
     }));
   };
 
@@ -25,71 +27,90 @@ const Register = () => {
       return;
     }
     console.log('Registration attempt:', formData);
-    // Simulate registration
     navigate('/login');
   };
 
   return (
-    <div className="auth-container">
-      <h2>Create Account</h2>
-      <p>Join us to start your journey</p>
-      
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Choose a username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+    <div className="register-page">
+      <div className="register-card">
+        <div className="register-header">
+          <div className="logo-container">
+            <div className="logo-icon-wrapper">
+              <MapPin className="logo-icon" size={32} fill="#3b82f6" />
+            </div>
+            <h1>Parking Area Allocation System</h1>
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Create a password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <div className="register-body">
+          <h2>Create Account</h2>
+          
+          <form className="register-form" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <div className="input-icon">
+                <User size={20} />
+              </div>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            placeholder="Confirm your password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
+            <div className="input-group">
+              <div className="input-icon">
+                <Mail size={20} />
+              </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="input-group">
+              <div className="input-icon">
+                <Lock size={20} />
+              </div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <div className="input-icon">
+                <Lock size={20} />
+              </div>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <button type="submit" className="register-button">
+              Register
+            </button>
+          </form>
+          
+          <div className="register-footer">
+            Already have an account? <Link to="/login" className="signup-link">Login</Link>
+          </div>
         </div>
-        
-        <button type="submit" className="auth-button">
-          Register
-        </button>
-      </form>
-      
-      <div className="auth-footer">
-        Already have an account? <Link to="/login">Login here</Link>
       </div>
     </div>
   );
