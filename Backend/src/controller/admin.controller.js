@@ -39,10 +39,11 @@ exports.aiDetectParking = async (req, res, next) => {
     // Simulate AI processing delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // Simulated AI detection results (popular areas in Kathmandu that might have public parking)
+    // Simulated AI detection results for major cities and hubs all over Nepal
     const detectedLots = [
+      // KATHMANDU VALLEY
       {
-        name: "AI Detected: Kalimati Market Area",
+        name: "AI: Kalimati Market Area",
         lat: 27.6981,
         lon: 85.2974,
         pricePerHour: 30,
@@ -50,7 +51,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: "AI Detected: New Road Gate",
+        name: "AI: New Road Gate",
         lat: 27.7042,
         lon: 85.3117,
         pricePerHour: 50,
@@ -58,10 +59,164 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "bike",
       },
       {
-        name: "AI Detected: Pashupatinath Area",
+        name: "AI: Pashupatinath Area",
         lat: 27.7104,
         lon: 85.3487,
         pricePerHour: 40,
+        totalSpots: 100,
+        type: "both",
+      },
+      {
+        name: "AI: Koteshwor Junction",
+        lat: 27.6766,
+        lon: 85.3521,
+        pricePerHour: 30,
+        totalSpots: 50,
+        type: "both",
+      },
+      {
+        name: "AI: Maharajgunj Chowk",
+        lat: 27.7371,
+        lon: 85.3331,
+        pricePerHour: 40,
+        totalSpots: 60,
+        type: "car",
+      },
+      {
+        name: "AI: Patan Hospital Area",
+        lat: 27.6684,
+        lon: 85.3201,
+        pricePerHour: 30,
+        totalSpots: 80,
+        type: "both",
+      },
+      {
+        name: "AI: Bhaktapur Durbar Square Ent.",
+        lat: 27.6722,
+        lon: 85.4277,
+        pricePerHour: 40,
+        totalSpots: 120,
+        type: "both",
+      },
+
+      // POKHARA
+      {
+        name: "AI: Pokhara Airport Area",
+        lat: 28.1995,
+        lon: 83.9856,
+        pricePerHour: 50,
+        totalSpots: 150,
+        type: "car",
+      },
+      {
+        name: "AI: Prithvi Chowk Pokhara",
+        lat: 28.2091,
+        lon: 83.9918,
+        pricePerHour: 30,
+        totalSpots: 100,
+        type: "both",
+      },
+      {
+        name: "AI: Sarangkot Viewpoint",
+        lat: 28.2439,
+        lon: 83.9486,
+        pricePerHour: 40,
+        totalSpots: 40,
+        type: "both",
+      },
+
+      // CHITWAN / BHARATPUR
+      {
+        name: "AI: Bharatpur Hospital Area",
+        lat: 27.6806,
+        lon: 84.4302,
+        pricePerHour: 20,
+        totalSpots: 200,
+        type: "both",
+      },
+      {
+        name: "AI: Narayangarh Riverside",
+        lat: 27.7028,
+        lon: 84.4255,
+        pricePerHour: 30,
+        totalSpots: 80,
+        type: "both",
+      },
+      {
+        name: "AI: Sauraha Tourist Bus Park",
+        lat: 27.5833,
+        lon: 84.4952,
+        pricePerHour: 40,
+        totalSpots: 100,
+        type: "car",
+      },
+
+      // BIRATNAGAR / ITahari
+      {
+        name: "AI: Biratnagar Airport Parking",
+        lat: 26.4839,
+        lon: 87.2667,
+        pricePerHour: 50,
+        totalSpots: 120,
+        type: "car",
+      },
+      {
+        name: "AI: Itahari Main Chowk",
+        lat: 26.6647,
+        lon: 87.2719,
+        pricePerHour: 20,
+        totalSpots: 150,
+        type: "both",
+      },
+      {
+        name: "AI: Dharan Bhanu Chowk",
+        lat: 26.8128,
+        lon: 87.2831,
+        pricePerHour: 25,
+        totalSpots: 80,
+        type: "both",
+      },
+
+      // BUTWAL / BHAIRAHAWA
+      {
+        name: "AI: Butwal Traffic Chowk",
+        lat: 27.7006,
+        lon: 83.4484,
+        pricePerHour: 20,
+        totalSpots: 120,
+        type: "both",
+      },
+      {
+        name: "AI: Lumbini Garden Gate",
+        lat: 27.4811,
+        lon: 83.2758,
+        pricePerHour: 50,
+        totalSpots: 300,
+        type: "both",
+      },
+      {
+        name: "AI: Gautam Buddha Airport",
+        lat: 27.5083,
+        lon: 83.4158,
+        pricePerHour: 60,
+        totalSpots: 250,
+        type: "car",
+      },
+
+      // JANAKPUR / NEPALGUNJ
+      {
+        name: "AI: Janakpurdham Temple Area",
+        lat: 26.7303,
+        lon: 85.9248,
+        pricePerHour: 30,
+        totalSpots: 150,
+        type: "both",
+      },
+      {
+        name: "AI: Nepalgunj Birendra Chowk",
+        lat: 28.05,
+        lon: 81.6167,
+        pricePerHour: 25,
         totalSpots: 100,
         type: "both",
       },

@@ -495,7 +495,7 @@ const AdminDashboard = () => {
                   }}
                 >
                   <Cpu size={20} className={isAiScanning ? 'animate-pulse' : ''} /> 
-                  {isAiScanning ? 'AI Scanning...' : 'AI Detect Public Parking'}
+                  {isAiScanning ? 'Scanning Nepal...' : 'AI Detect Nepal Parking'}
                 </button>
                 <button 
                   className="add-lot-btn" 
