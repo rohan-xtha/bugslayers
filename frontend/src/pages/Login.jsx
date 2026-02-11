@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Lock, MapPin, ChevronDown } from 'lucide-react';
+import { User, Lock, MapPin } from 'lucide-react';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -29,8 +29,8 @@ const Login = () => {
     setError('');
 
     try {
-      // API call to backend login endpoint
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      // API call to backend login endpoint (using upstream URL)
+      const response = await fetch('http://localhost:8000/api/v1/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,9 @@ const Login = () => {
                 <span className="checkmark"></span>
                 Remember Me
               </label>
-              <a href="#" className="forgot-password">Forgot Password?</a>
+              <Link to="/forgot-password" title="Forgot Password?" className="forgot-password">
+                Forgot Password?
+              </Link>
             </div>
 
             {/* Submit Button: Changes state based on loading */}

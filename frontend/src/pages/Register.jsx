@@ -37,8 +37,8 @@ const Register = () => {
     setError('');
 
     try {
-      // API call to backend registration endpoint
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      // API call to backend registration endpoint (using upstream URL)
+      const response = await fetch('http://localhost:8000/api/v1/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
