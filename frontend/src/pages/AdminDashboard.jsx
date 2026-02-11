@@ -179,7 +179,7 @@ const AdminDashboard = () => {
         fetchStats();
       }
     } catch (err) {
-      console.error('AI Detection Error:', err);
+      console.error(' Error:', err);
       alert('AI Scan failed. Please check backend logs.');
     } finally {
       setIsAiScanning(false);
@@ -495,7 +495,7 @@ const AdminDashboard = () => {
                   }}
                 >
                   <Cpu size={20} className={isAiScanning ? 'animate-pulse' : ''} /> 
-                  {isAiScanning ? 'Scanning Nepal...' : 'AI Detect Nepal Parking'}
+                  {isAiScanning ? 'Scanning Nepal...' : ' Nepal Parking'}
                 </button>
                 <button 
                   className="add-lot-btn" 

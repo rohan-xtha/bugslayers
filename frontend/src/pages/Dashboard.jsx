@@ -31,6 +31,24 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow,
 });
 
+// --- Haversine Formula for Distance Calculation ---
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+};
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
+
 // Custom User Location Icon
 const userIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -87,7 +105,19 @@ const Dashboard = () => {
       
       const lotsRes = await fetch(url);
       const lotsData = await lotsRes.json();
-      if (lotsData.success) setParkingLots(lotsData.data);
+      if (lotsData.success) {
+        let processedLots = lotsData.data;
+        
+        // If userLocation is available, calculate and inject distance locally
+        if (userLocation) {
+          processedLots = processedLots.map(lot => ({
+            ...lot,
+            distance: calculateDistance(userLocation[0], userLocation[1], lot.lat, lot.lon)
+          })).sort((a, b) => a.distance - b.distance); // Sort by closest
+        }
+        
+        setParkingLots(processedLots);
+      }
 
       // Fetch Active Session (Requires Auth Token)
       const token = localStorage.getItem('token');
@@ -145,8 +175,16 @@ const Dashboard = () => {
           setUserLocation([latitude, longitude]);
           console.log("Updated location:", latitude, longitude);
           
-          // Only fetch nearby lots based on real location if map center hasn't been moved manually
-          // Or just update nearby lots whenever location changes significantly
+          // Re-calculate distances for existing lots without fetching again
+          setParkingLots(prevLots => {
+            const updated = prevLots.map(lot => ({
+              ...lot,
+              distance: calculateDistance(latitude, longitude, lot.lat, lot.lon)
+            })).sort((a, b) => a.distance - b.distance);
+            return updated;
+          });
+
+          // Fetch nearby lots based on real location
           fetchData(latitude, longitude);
         },
         (error) => {
