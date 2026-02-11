@@ -4,16 +4,18 @@ import { User, Mail, Lock, MapPin } from 'lucide-react';
 import '../styles/Register.css';
 
 const Register = () => {
+  // --- State Management ---
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Tracks API request status
+  const [error, setError] = useState('');       // Stores error messages for display
   const navigate = useNavigate();
 
+  // --- Event Handlers ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -24,6 +26,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Client-side validation: Password confirmation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -33,6 +37,7 @@ const Register = () => {
     setError('');
 
     try {
+      // API call to backend registration endpoint
       const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: {
@@ -48,12 +53,15 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Successful registration: Redirect to login page
         console.log('Registration successful:', data);
         navigate('/login');
       } else {
+        // Server returned an error (e.g., User already exists)
         setError(data.message || 'Registration failed. Please try again.');
       }
     } catch (err) {
+      // Network or connection issues
       setError('Connection error. Is the backend server running?');
       console.error('Fetch error:', err);
     } finally {
@@ -64,6 +72,7 @@ const Register = () => {
   return (
     <div className="register-page">
       <div className="register-card">
+        {/* Header Section: Logo and Title */}
         <div className="register-header">
           <div className="logo-container">
             <div className="logo-icon-wrapper">
@@ -76,9 +85,12 @@ const Register = () => {
         <div className="register-body">
           <h2>Create Account</h2>
           
+          {/* Error Feedback: Displayed only when error state is set */}
           {error && <div className="error-message" style={{ color: '#ef4444', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '8px', marginBottom: '20px', fontSize: '14px', textAlign: 'center', border: '1px solid #fecaca' }}>{error}</div>}
 
+          {/* Registration Form Section */}
           <form className="register-form" onSubmit={handleSubmit}>
+            {/* Username Input */}
             <div className="input-group">
               <div className="input-icon">
                 <User size={20} />
@@ -94,6 +106,7 @@ const Register = () => {
               />
             </div>
 
+            {/* Email Input */}
             <div className="input-group">
               <div className="input-icon">
                 <Mail size={20} />
@@ -109,6 +122,7 @@ const Register = () => {
               />
             </div>
             
+            {/* Password Input */}
             <div className="input-group">
               <div className="input-icon">
                 <Lock size={20} />
@@ -124,6 +138,7 @@ const Register = () => {
               />
             </div>
 
+            {/* Confirm Password Input */}
             <div className="input-group">
               <div className="input-icon">
                 <Lock size={20} />
@@ -139,13 +154,15 @@ const Register = () => {
               />
             </div>
 
+            {/* Submit Button: Changes state based on loading */}
             <button type="submit" className="register-button" disabled={loading}>
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
           </form>
-          
+
+          {/* Navigation to Login */}
           <div className="register-footer">
-            Already have an account? <Link to="/login" className="signup-link">Login</Link>
+            <p>Already have an account? <Link to="/login">Login</Link></p>
           </div>
         </div>
       </div>
