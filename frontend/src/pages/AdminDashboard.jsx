@@ -13,6 +13,9 @@ import {
   DollarSign, 
   CreditCard, 
   Plus,
+  Trash2,
+  Pencil,
+  X,
   LogOut,
   ChevronRight,
   Users
@@ -50,6 +53,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddingLot, setIsAddingLot] = useState(false);
+  const [isEditingLot, setIsEditingLot] = useState(false);
+  const [editingLot, setEditingLot] = useState(null);
   const [newLot, setNewLot] = useState({
     name: '',
     lat: '',
@@ -61,9 +66,15 @@ const AdminDashboard = () => {
 
   const fetchLots = async () => {
     const token = localStorage.getItem('token');
+    if (!token) return;
+    
     try {
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
       const res = await fetch('http://localhost:8000/api/v1/admin/lots', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers
       });
       const data = await res.json();
       if (res.ok) setAllLots(data);
@@ -75,6 +86,28 @@ const AdminDashboard = () => {
   const handleAddLot = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+    
+    const lat = parseFloat(newLot.lat);
+    const lon = parseFloat(newLot.lon);
+    const pricePerHour = parseFloat(newLot.pricePerHour);
+    const totalSpots = parseInt(newLot.totalSpots);
+
+    if (isNaN(lat) || isNaN(lon) || isNaN(pricePerHour) || isNaN(totalSpots)) {
+      alert('Please enter valid numbers for coordinates, price, and spots.');
+      return;
+    }
+
+    // Convert string inputs to numbers for the backend
+    const lotData = {
+      ...newLot,
+      lat,
+      lon,
+      pricePerHour,
+      totalSpots
+    };
+
+    console.log('Sending lot data:', lotData);
+
     try {
       const res = await fetch('http://localhost:8000/api/v1/admin/lots', {
         method: 'POST',
@@ -82,20 +115,76 @@ const AdminDashboard = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newLot)
+        body: JSON.stringify(lotData)
       });
+      
+      const data = await res.json();
+      
       if (res.ok) {
         setIsAddingLot(false);
         setNewLot({ name: '', lat: '', lon: '', pricePerHour: '', totalSpots: '', type: 'both' });
         fetchLots();
+      } else {
+        alert(`Error: ${data.message || 'Failed to add parking lot'}`);
       }
     } catch (err) {
       console.error('Error adding lot:', err);
+      alert('Network error while adding parking lot');
     }
   };
 
-  const handleDeleteLot = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this parking lot?')) return;
+  const handleUpdateLot = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    
+    const lat = parseFloat(editingLot.lat);
+    const lon = parseFloat(editingLot.lon);
+    const pricePerHour = parseFloat(editingLot.pricePerHour);
+    const totalSpots = parseInt(editingLot.totalSpots);
+
+    if (isNaN(lat) || isNaN(lon) || isNaN(pricePerHour) || isNaN(totalSpots)) {
+      alert('Please enter valid numbers for coordinates, price, and spots.');
+      return;
+    }
+
+    const lotData = {
+      ...editingLot,
+      lat,
+      lon,
+      pricePerHour,
+      totalSpots
+    };
+
+    try {
+      const res = await fetch(`http://localhost:8000/api/v1/admin/lots/${editingLot._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(lotData)
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        setIsEditingLot(false);
+        setEditingLot(null);
+        fetchLots();
+      } else {
+        alert(`Error: ${data.message || 'Failed to update parking lot'}`);
+      }
+    } catch (err) {
+      console.error('Error updating lot:', err);
+      alert('Network error while updating parking lot');
+    }
+  };
+
+  const handleDeleteLot = async (e, id) => {
+    if (e) e.stopPropagation();
+    const confirmed = window.confirm('Are you sure you want to delete this parking lot?');
+    if (!confirmed) return;
+    
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`http://localhost:8000/api/v1/admin/lots/${id}`, {
@@ -111,17 +200,16 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchAdminData = async () => {
       const token = localStorage.getItem('token');
-      // Temporarily bypass token check for development if desired, 
-      // but let's keep it and just ensure the backend doesn't reject.
+      if (!token) {
+        navigate('/login');
+        return;
+      }
 
       try {
         const headers = {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         };
-        
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
 
         const [statsRes, trendsRes, activityRes, lotsRes] = await Promise.all([
           fetch('http://localhost:8000/api/v1/admin/stats', { headers }),
@@ -368,6 +456,18 @@ const AdminDashboard = () => {
           </>
         ) : activeTab === 'manage-lots' ? (
           <section className="manage-lots-section" style={{ padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#1e293b' }}>Manage Parking Lots</h2>
+                <p style={{ color: '#64748b' }}>Create, update or remove parking locations</p>
+              </div>
+              <button 
+                onClick={() => setIsAddingLot(true)}
+                style={{ background: '#6366f1', color: 'white', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
+              >
+                <Plus size={20} /> Add New Lot
+              </button>
+            </div>
             {isAddingLot && (
               <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
                 <div className="modal-content" style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '400px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
@@ -394,6 +494,32 @@ const AdminDashboard = () => {
               </div>
             )}
 
+            {isEditingLot && editingLot && (
+              <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+                <div className="modal-content" style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '400px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+                  <h3 style={{ marginBottom: '20px' }}>Edit Parking Lot</h3>
+                  <form onSubmit={handleUpdateLot} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    <input type="text" placeholder="Lot Name" required value={editingLot.name} onChange={e => setEditingLot({...editingLot, name: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }} />
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <input type="number" step="any" placeholder="Latitude" required value={editingLot.lat} onChange={e => setEditingLot({...editingLot, lat: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', flex: 1 }} />
+                      <input type="number" step="any" placeholder="Longitude" required value={editingLot.lon} onChange={e => setEditingLot({...editingLot, lon: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', flex: 1 }} />
+                    </div>
+                    <input type="number" placeholder="Price Per Hour (NPR)" required value={editingLot.pricePerHour} onChange={e => setEditingLot({...editingLot, pricePerHour: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }} />
+                    <input type="number" placeholder="Total Spots" required value={editingLot.totalSpots} onChange={e => setEditingLot({...editingLot, totalSpots: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }} />
+                    <select value={editingLot.type} onChange={e => setEditingLot({...editingLot, type: e.target.value})} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                      <option value="car">Car Only</option>
+                      <option value="bike">Bike Only</option>
+                      <option value="both">Both</option>
+                    </select>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                      <button type="submit" style={{ flex: 1, background: '#6366f1', color: 'white', padding: '12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: '600' }}>Update Lot</button>
+                      <button type="button" onClick={() => { setIsEditingLot(false); setEditingLot(null); }} style={{ flex: 1, background: '#f1f5f9', color: '#475569', padding: '12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: '600' }}>Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
             <div className="lots-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
               {allLots.map(lot => (
                 <div key={lot._id} className="lot-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
@@ -402,9 +528,14 @@ const AdminDashboard = () => {
                       <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1e293b' }}>{lot.name}</h4>
                       <p style={{ fontSize: '0.875rem', color: '#64748b' }}>{lot.type.toUpperCase()} • {lot.totalSpots} Spots</p>
                     </div>
-                    <button onClick={() => handleDeleteLot(lot._id)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}>
-                      <Plus size={20} style={{ transform: 'rotate(45deg)' }} />
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => { setEditingLot(lot); setIsEditingLot(true); }} style={{ color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}>
+                        <Pencil size={18} />
+                      </button>
+                      <button onClick={(e) => handleDeleteLot(e, lot._id)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}>
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: '600', color: '#6366f1' }}>NPR {lot.pricePerHour}/hr</span>
