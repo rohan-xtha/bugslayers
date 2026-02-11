@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet/dist/leaflet.css';
 import '../styles/Dashboard.css';
 
@@ -80,6 +82,35 @@ const RecenterMap = ({ position }) => {
   return null;
 };
 
+// --- Component to handle routing path ---
+const RoutingMachine = ({ userLoc, destinationLoc }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map || !userLoc || !destinationLoc) return;
+
+    const routingControl = L.Routing.control({
+      waypoints: [
+        L.latLng(userLoc[0], userLoc[1]),
+        L.latLng(destinationLoc[0], destinationLoc[1])
+      ],
+      lineOptions: {
+        styles: [{ color: '#6366f1', weight: 6 }]
+      },
+      show: false,
+      addWaypoints: false,
+      routeWhileDragging: false,
+      draggableWaypoints: false,
+      fitSelectedRoutes: true,
+      createMarker: () => null // We already have our own markers
+    }).addTo(map);
+
+    return () => map.removeControl(routingControl);
+  }, [map, userLoc, destinationLoc]);
+
+  return null;
+};
+
 const Dashboard = () => {
   // --- State Management ---
   const [isParked, setIsParked] = useState(false);
@@ -93,6 +124,7 @@ const Dashboard = () => {
   const [mapCenter, setMapCenter] = useState([27.7172, 85.3240]); // Default to Kathmandu
   const [activeCategory, setActiveCategory] = useState('car');
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+  const [destination, setDestination] = useState(null);
 
   // --- Logic: Fetch Data from Backend ---
   const fetchData = async (lat, lon) => {
@@ -258,6 +290,10 @@ const Dashboard = () => {
               
               <RecenterMap position={mapCenter} />
 
+              {userLocation && destination && (
+                <RoutingMachine userLoc={userLocation} destinationLoc={destination} />
+              )}
+
               {userLocation && (
                 <Marker position={userLocation} icon={userIcon}>
                   <Popup>You are here (Live)</Popup>
@@ -269,7 +305,23 @@ const Dashboard = () => {
                   <Popup>
                     <strong>{lot.name}</strong><br />
                     Price: NPR {lot.pricePerHour}/hr<br />
-                    Status: {lot.status}
+                    Status: {lot.status}<br />
+                    <button 
+                      className="get-directions-btn"
+                      onClick={() => setDestination([lot.lat, lot.lon])}
+                      style={{
+                        marginTop: '8px',
+                        padding: '4px 8px',
+                        backgroundColor: '#6366f1',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                      }}
+                    >
+                      Get Directions
+                    </button>
                   </Popup>
                 </Marker>
               ))}
@@ -387,9 +439,37 @@ const Dashboard = () => {
                   </div>
                   <span className="occupancy-text">{lot.occupiedSpots}/{lot.totalSpots} slots</span>
                 </div>
-                <button className={`book-btn ${lot.status}`} disabled={lot.status === 'full'}>
-                  {lot.status === 'full' ? 'Sold Out' : 'Book Now'}
-                </button>
+                <div className="card-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button 
+                    className={`book-btn ${lot.status}`} 
+                    disabled={lot.status === 'full'}
+                    style={{ flex: 1 }}
+                  >
+                    {lot.status === 'full' ? 'Sold Out' : 'Book Now'}
+                  </button>
+                  <button 
+                    className="directions-btn-outline"
+                    onClick={() => {
+                      setDestination([lot.lat, lot.lon]);
+                      setIsSheetExpanded(false);
+                      setMapCenter([lot.lat, lot.lon]);
+                    }}
+                    style={{
+                      padding: '8px',
+                      borderRadius: '8px',
+                      border: '1px solid #6366f1',
+                      backgroundColor: 'transparent',
+                      color: '#6366f1',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="Show Path"
+                  >
+                    <Navigation size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
