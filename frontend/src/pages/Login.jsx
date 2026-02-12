@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { User, Lock, MapPin } from 'lucide-react';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 import '../styles/Login.css';
 
 const Login = () => {
@@ -12,7 +13,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false); // Tracks API request status
   const [error, setError] = useState('');       // Stores error messages for display
-  const navigate = useNavigate();
+  const { login } = useAuth(); // Use the login function from AuthContext
 
   // --- Event Handlers ---
   const handleChange = (e) => {
@@ -43,15 +44,14 @@ const Login = () => {
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Successful login: Store token and redirect
-        localStorage.setItem('token', data.token);
-        console.log('Login successful:', data);
-        navigate('/dashboard');
-      } else {
-        // Server returned an error (e.g., 401 Unauthorized)
-        setError(data.message || 'Login failed. Please try again.');
-      }
+        if (response.ok) {
+          // Successful login: Use AuthContext's login function
+          login(data.token); // This will store token, decode, set user, and navigate
+          console.log('Login successful:', data);
+        } else {
+          // Server returned an error (e.g., 401 Unauthorized)
+          setError(data.message || 'Login failed. Please try again.');
+        }
     } catch (err) {
       // Network or connection issues
       setError('Connection error. Is the backend server running?');

@@ -43,7 +43,7 @@ exports.aiDetectParking = async (req, res, next) => {
     const detectedLots = [
       // KATHMANDU VALLEY
       {
-        name: " Kalimati Market Area",
+        name: "AI: Kalimati Market Area",
         lat: 27.6981,
         lon: 85.2974,
         pricePerHour: 30,
@@ -51,7 +51,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " New Road Gate",
+        name: "AI: New Road Gate",
         lat: 27.7042,
         lon: 85.3117,
         pricePerHour: 50,
@@ -59,7 +59,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "bike",
       },
       {
-        name: " Pashupatinath Area",
+        name: "AI: Pashupatinath Area",
         lat: 27.7104,
         lon: 85.3487,
         pricePerHour: 40,
@@ -67,7 +67,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Koteshwor Junction",
+        name: "AI: Koteshwor Junction",
         lat: 27.6766,
         lon: 85.3521,
         pricePerHour: 30,
@@ -75,7 +75,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Maharajgunj Chowk",
+        name: "AI: Maharajgunj Chowk",
         lat: 27.7371,
         lon: 85.3331,
         pricePerHour: 40,
@@ -83,7 +83,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "car",
       },
       {
-        name: " Patan Hospital Area",
+        name: "AI: Patan Hospital Area",
         lat: 27.6684,
         lon: 85.3201,
         pricePerHour: 30,
@@ -91,7 +91,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Bhaktapur Durbar Square Ent.",
+        name: "AI: Bhaktapur Durbar Square Ent.",
         lat: 27.6722,
         lon: 85.4277,
         pricePerHour: 40,
@@ -101,7 +101,7 @@ exports.aiDetectParking = async (req, res, next) => {
 
       // POKHARA
       {
-        name: " Pokhara Airport Area",
+        name: "AI: Pokhara Airport Area",
         lat: 28.1995,
         lon: 83.9856,
         pricePerHour: 50,
@@ -109,7 +109,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "car",
       },
       {
-        name: " Prithvi Chowk Pokhara",
+        name: "AI: Prithvi Chowk Pokhara",
         lat: 28.2091,
         lon: 83.9918,
         pricePerHour: 30,
@@ -117,7 +117,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Sarangkot Viewpoint",
+        name: "AI: Sarangkot Viewpoint",
         lat: 28.2439,
         lon: 83.9486,
         pricePerHour: 40,
@@ -127,7 +127,7 @@ exports.aiDetectParking = async (req, res, next) => {
 
       // CHITWAN / BHARATPUR
       {
-        name: " Bharatpur Hospital Area",
+        name: "AI: Bharatpur Hospital Area",
         lat: 27.6806,
         lon: 84.4302,
         pricePerHour: 20,
@@ -135,7 +135,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Narayangarh Riverside",
+        name: "AI: Narayangarh Riverside",
         lat: 27.7028,
         lon: 84.4255,
         pricePerHour: 30,
@@ -143,7 +143,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Sauraha Tourist Bus Park",
+        name: "AI: Sauraha Tourist Bus Park",
         lat: 27.5833,
         lon: 84.4952,
         pricePerHour: 40,
@@ -153,7 +153,7 @@ exports.aiDetectParking = async (req, res, next) => {
 
       // BIRATNAGAR / ITahari
       {
-        name: " Biratnagar Airport Parking",
+        name: "AI: Biratnagar Airport Parking",
         lat: 26.4839,
         lon: 87.2667,
         pricePerHour: 50,
@@ -161,7 +161,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "car",
       },
       {
-        name: " Itahari Main Chowk",
+        name: "AI: Itahari Main Chowk",
         lat: 26.6647,
         lon: 87.2719,
         pricePerHour: 20,
@@ -169,7 +169,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Dharan Bhanu Chowk",
+        name: "AI: Dharan Bhanu Chowk",
         lat: 26.8128,
         lon: 87.2831,
         pricePerHour: 25,
@@ -187,7 +187,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Lumbini Garden Gate",
+        name: "AI: Lumbini Garden Gate",
         lat: 27.4811,
         lon: 83.2758,
         pricePerHour: 50,
@@ -195,7 +195,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Gautam Buddha Airport",
+        name: "AI: Gautam Buddha Airport",
         lat: 27.5083,
         lon: 83.4158,
         pricePerHour: 60,
@@ -205,7 +205,7 @@ exports.aiDetectParking = async (req, res, next) => {
 
       // JANAKPUR / NEPALGUNJ
       {
-        name: " Janakpurdham Temple Area",
+        name: "AI: Janakpurdham Temple Area",
         lat: 26.7303,
         lon: 85.9248,
         pricePerHour: 30,
@@ -213,7 +213,7 @@ exports.aiDetectParking = async (req, res, next) => {
         type: "both",
       },
       {
-        name: " Nepalgunj Birendra Chowk",
+        name: "AI: Nepalgunj Birendra Chowk",
         lat: 28.05,
         lon: 81.6167,
         pricePerHour: 25,

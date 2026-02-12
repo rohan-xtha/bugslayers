@@ -18,6 +18,12 @@ const userSchema=new mongoose.Schema({
         enum:["driver","superadmin"],
         default:"driver"
     },
+    photo:{
+        type:String,
+        default:"https://api.dicebear.com/7.x/initials/svg?seed=John%20Doe" // Default avatar
+    },
+    passwordResetToken: String,
+    passwordResetExpires: Date
 })
 
 const User=mongoose.model("User",userSchema)

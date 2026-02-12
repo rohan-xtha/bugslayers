@@ -1,27 +1,32 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import ForgotPassword from './pages/ForgotPassword'; // Ensure ForgotPassword is imported
 import './styles/global.css';
+import Profile from './pages/Profile';
+import Contact from './pages/Contact';
+import BottomNavbar from './components/BottomNavbar';
 
 const Layout = ({ children }) => {
-  const location = useLocation();
-  const hideNavFooter = ['/', '/login', '/register', '/dashboard', '/admin'].includes(location.pathname);
+  const { user, loading } = useAuth(); // Use useAuth hook
+
+  if (loading) {
+    return <div>Loading application...</div>; // Or a loading spinner
+  }
 
   return (
     <div className="app">
-      {!hideNavFooter && <Navbar />}
       <main>
         {children}
       </main>
-      {!hideNavFooter && <Footer />}
+      {user && <BottomNavbar />} {/* Render BottomNavbar only if user is logged in */}
     </div>
   );
 };
@@ -29,17 +34,26 @@ const Layout = ({ children }) => {
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
+      <AuthProvider> {/* Wrap the entire application with AuthProvider */}
+        <Layout>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Add forgot password route */}
+
+            {/* Protected routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute roles={['superadmin']}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+            
+            {/* Catch-all route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
+      </AuthProvider>
     </Router>
   );
 }

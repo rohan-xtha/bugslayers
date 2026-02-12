@@ -2,6 +2,10 @@ const express = require("express");
 const {
   login,
   signup,
+  getProfile,
+  updateProfile,
+  forgotPassword,
+  upload,
 } = require("../controller/user.controller");
 const { isauthenticated, Isadmin } = require("../middleware/auth");
 const User = require("../models/User.model");
@@ -16,24 +20,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/profile", isauthenticated, async (req, res) => {
-//   const user = await User.findById(req.user.id).select("-password");
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
-//   res.json(user);
-// });
+router.get("/profile", isauthenticated, getProfile);
 
-// router.patch("/profile", isauthenticated, async (req, res) => {
-//   if (req.user.id !== req.params.id && req.user.role !== "superadmin") {
-//     return res.status(403).json({ message: "Access denied" });
-//   }
-//   const user = await User.findByIdAndUpdate(req.user.id, req.body, {
-//     new: true,
-//   }).select("-password");
-
-//   res.json(user);
-// });
+router.patch("/profile", isauthenticated, upload.single("photo"), updateProfile);
 
 router
   .route("/:id")
@@ -73,5 +62,6 @@ router.get("/dashboard", isauthenticated, Isadmin, (req, res) => {
 
 router.post("/login", login);
 router.post("/signup", signup);
+router.post("/forgotPassword", forgotPassword);
 
 module.exports = router;

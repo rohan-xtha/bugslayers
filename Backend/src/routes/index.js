@@ -3,6 +3,7 @@ const router = express.Router();
 const userRouter = require("./user.router");
 const parkingRouter = require("./parking.router");
 const adminRouter = require("./admin.router");
+const contactRouter = require("./contact.route");
 
 const routers = [
   {
@@ -32,5 +33,6 @@ router.use("/users", userRouter);
 router.use("/parking", parkingRouter);
 router.use("/admin", adminRouter);
 router.use("/test", testRouter);
+router.use("/contact", contactRouter);
 
 module.exports = router;

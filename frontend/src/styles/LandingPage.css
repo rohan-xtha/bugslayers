@@ -10,9 +10,6 @@
 
 .landing-container {
   min-height: 100vh;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 

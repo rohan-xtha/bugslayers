@@ -3,6 +3,22 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Multer storage configuration (in-memory storage for Cloudinary upload)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 // const pid = new mongoose.Types.ObjectId(productId);
 
 const signupSchema = Joi.object({
@@ -183,8 +199,138 @@ const signup = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error("Get profile error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    let photoUrl = req.body.photo; // Default to existing photo if not updated
+
+    if (req.file) {
+      // Upload new photo to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+        {
+          folder: "profile_photos",
+          width: 150,
+          height: 150,
+          crop: "fill",
+        }
+      );
+      photoUrl = result.secure_url;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { username, email, photo: photoUrl },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser);
+  } catch (err) {
+    console.error("Update profile error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Helper function to send emails
+const sendEmail = async (options) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "BugSlayer <noreply@bugslayer.com>",
+    to: options.email,
+    subject: options.subject,
+    text: options.message,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Get user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "There is no user with that email address.",
+      });
+    }
+
+    // 2. Generate a random reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // 3. Save the token to the user document (hashed) and set expiration
+    user.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save({ validateBeforeSave: false });
+
+    // 4. Send email with reset link
+    const resetURL = `${req.protocol}://${req.get("host")}/resetPassword/${resetToken}`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Your password reset token (valid for 10 min)",
+        message,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Token sent to email!",
+      });
+    } catch (emailError) {
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      console.error("Email sending error:", emailError);
+      return res.status(500).json({
+        success: false,
+        message:
+          "There was an error sending the email. Try again later!",
+      });
+    }
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 module.exports = {
   signup,
   login,
+  getProfile,
+  updateProfile,
+  forgotPassword,
+  upload,
 };
